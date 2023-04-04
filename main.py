@@ -7,7 +7,7 @@ window.title("Метод Гаусса")
 window.geometry("700x400")
 
 
-def count():
+def count():  # solve system
     x1res.config(text="")
     x2res.config(text="")
     x3res.config(text="")

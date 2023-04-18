@@ -53,7 +53,6 @@ def count_iteration():  # solve system with iteration method
 
         c = 3
         eps = 1 / 10 ** c
-        x = []
         n = len(A)
         for j in range(n):
             k = A[j][j]
@@ -63,29 +62,50 @@ def count_iteration():  # solve system with iteration method
             B[j] /= k
 
         r = 0
+        steps = []
         x = B.copy()
         tmp = sum(x) + 2 * eps
-        while abs(sum(x) - tmp) > eps:
+        while abs(sum(x) - tmp) > eps and r < 1000:
             tmp = sum(x)
             t = [0] * n
+            steps.append([])
             for i in range(n):
                 t[i] = sum(x[j] * A[i][j] for j in range(n)) + B[i]
+                steps[r].append(t[i])
             r += 1
             x = t.copy()
-
-        print(*(round(elem, 3) for elem in x))
-        print(r)
 
         x1res.config(text=f"X1 = {round(x[0], 3)}")
         x2res.config(text=f"X2 = {round(x[1], 3)}")
         x3res.config(text=f"X3 = {round(x[2], 3)}")
+
+        newWindow = Toplevel(window)
+        newWindow.title("Шаги")
+        newWindow.geometry("300x400")
+
+        res = []
+        s = 0
+        for p in steps:
+            res.append(f"{s}) X1 = {round(p[0], 3)} | X2 = {round(p[1], 3)} | X3 = {round(p[2], 3)}")
+            s += 1
+
+        vvar = StringVar(value=res)
+        listbox = Listbox(newWindow, listvariable=vvar, font=12)
+        listbox.pack(side=LEFT, fill=BOTH, expand=1)
+
+        scrollbar = Scrollbar(newWindow, orient="vertical", command=listbox.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        listbox["yscrollcommand"] = scrollbar.set
+
+        newWindow.mainloop()
+
 
     except:
         mb.showerror("Ошибка",
                      "Решения не найдены. Убедитесь, что вы ввели значения верно (это система с 3 переменными!!)")
 
 
-def count_zeidel():  # solve system with zeidel method
+def count_zeidel():  # solve system with Seidel method
     x1res.config(text="")
     x2res.config(text="")
     x3res.config(text="")

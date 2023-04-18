@@ -13,19 +13,29 @@ def count_gauss():  # solve system with gauss method
     x3res.config(text="")
 
     try:
-        line1 = [int(x11.get()), int(x12.get()), int(x13.get())]
-        line2 = [int(x21.get()), int(x22.get()), int(x23.get())]
-        line3 = [int(x31.get()), int(x32.get()), int(x33.get())]
+        line1 = [float(x11.get()), float(x12.get()), float(x13.get())]
+        line2 = [float(x21.get()), float(x22.get()), float(x23.get())]
+        line3 = [float(x31.get()), float(x32.get()), float(x33.get())]
 
         a = [line1, line2, line3]
-        b = [int(b1.get()), int(b2.get()), int(b3.get())]
+        b = [float(b1.get()), float(b2.get()), float(b3.get())]
 
         x = np.linalg.solve(a, b)
-        x1res.config(text=f"X1 = {round(x[0])}")
-        x2res.config(text=f"X2 = {round(x[1])}")
-        x3res.config(text=f"X3 = {round(x[2])}")
+        x1res.config(text=f"X1 = {round(x[0], 3)}")
+        x2res.config(text=f"X2 = {round(x[1], 3)}")
+        x3res.config(text=f"X3 = {round(x[2], 3)}")
     except:
         mb.showerror("Ошибка", "Решения не найдены. Убедитесь, что вы ввели значения верно (это система с 3 переменными!!)")
+
+
+def sort_diag_arr(a, b):  # sort array
+    n = len(a)
+    for i in range(n):
+        ind, a[i:] = zip(*sorted(enumerate(a[i:]),
+                                 key=lambda x: -x[1][i]))
+        b[i:] = [b[i + j] for j in ind]
+
+    return a, b
 
 
 def count_iteration():  # solve system with iteration method
@@ -34,12 +44,41 @@ def count_iteration():  # solve system with iteration method
     x3res.config(text="")
 
     try:
-        line1 = [int(x11.get()), int(x12.get()), int(x13.get())]
-        line2 = [int(x21.get()), int(x22.get()), int(x23.get())]
-        line3 = [int(x31.get()), int(x32.get()), int(x33.get())]
+        A = [[float(x11.get()), float(x12.get()), float(x13.get())],
+               [float(x21.get()), float(x22.get()), float(x23.get())],
+               [float(x31.get()), float(x32.get()), float(x33.get())]]
+        B = [float(b1.get()), float(b2.get()), float(b3.get())]
 
-        a = [line1, line2, line3]
-        b = [int(b1.get()), int(b2.get()), int(b3.get())]
+        A, B = sort_diag_arr(A, B)
+
+        c = 3
+        eps = 1 / 10 ** c
+        x = []
+        n = len(A)
+        for j in range(n):
+            k = A[j][j]
+            for i in range(n):
+                A[j][i] /= -k
+            A[j][j] = 0
+            B[j] /= k
+
+        r = 0
+        x = B.copy()
+        tmp = sum(x) + 2 * eps
+        while abs(sum(x) - tmp) > eps:
+            tmp = sum(x)
+            t = [0] * n
+            for i in range(n):
+                t[i] = sum(x[j] * A[i][j] for j in range(n)) + B[i]
+            r += 1
+            x = t.copy()
+
+        print(*(round(elem, 3) for elem in x))
+        print(r)
+
+        x1res.config(text=f"X1 = {round(x[0], 3)}")
+        x2res.config(text=f"X2 = {round(x[1], 3)}")
+        x3res.config(text=f"X3 = {round(x[2], 3)}")
 
     except:
         mb.showerror("Ошибка",

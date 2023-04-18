@@ -3,11 +3,11 @@ import tkinter.messagebox as mb
 import numpy as np
 
 window = Tk()
-window.title("Метод Гаусса")
-window.geometry("700x400")
+window.title("Метод Гаусса/Итераций/Зейделя")
+window.geometry("700x450")
 
 
-def count():  # solve system
+def count_gauss():  # solve system with gauss method
     x1res.config(text="")
     x2res.config(text="")
     x3res.config(text="")
@@ -26,6 +26,42 @@ def count():  # solve system
         x3res.config(text=f"X3 = {round(x[2])}")
     except:
         mb.showerror("Ошибка", "Решения не найдены. Убедитесь, что вы ввели значения верно (это система с 3 переменными!!)")
+
+
+def count_iteration():  # solve system with iteration method
+    x1res.config(text="")
+    x2res.config(text="")
+    x3res.config(text="")
+
+    try:
+        line1 = [int(x11.get()), int(x12.get()), int(x13.get())]
+        line2 = [int(x21.get()), int(x22.get()), int(x23.get())]
+        line3 = [int(x31.get()), int(x32.get()), int(x33.get())]
+
+        a = [line1, line2, line3]
+        b = [int(b1.get()), int(b2.get()), int(b3.get())]
+
+    except:
+        mb.showerror("Ошибка",
+                     "Решения не найдены. Убедитесь, что вы ввели значения верно (это система с 3 переменными!!)")
+
+
+def count_zeidel():  # solve system with zeidel method
+    x1res.config(text="")
+    x2res.config(text="")
+    x3res.config(text="")
+
+    try:
+        line1 = [int(x11.get()), int(x12.get()), int(x13.get())]
+        line2 = [int(x21.get()), int(x22.get()), int(x23.get())]
+        line3 = [int(x31.get()), int(x32.get()), int(x33.get())]
+
+        a = [line1, line2, line3]
+        b = [int(b1.get()), int(b2.get()), int(b3.get())]
+
+    except:
+        mb.showerror("Ошибка",
+                     "Решения не найдены. Убедитесь, что вы ввели значения верно (это система с 3 переменными!!)")
 
 
 # first line
@@ -172,9 +208,9 @@ x1res = Label(window, font=("Calibri", 20), fg="white")
 x2res = Label(window, font=("Calibri", 20), fg="white")
 x3res = Label(window, font=("Calibri", 20), fg="white")
 
-x1res.grid(column=3, row=6, sticky=W, columnspan=4)
-x2res.grid(column=3, row=7, sticky=W, columnspan=4)
-x3res.grid(column=3, row=8, sticky=W, columnspan=4)
+x1res.grid(column=3, row=8, sticky=W, columnspan=4)
+x2res.grid(column=3, row=9, sticky=W, columnspan=4)
+x3res.grid(column=3, row=10, sticky=W, columnspan=4)
 
 
 # other elements
@@ -183,7 +219,13 @@ x3res.grid(column=3, row=8, sticky=W, columnspan=4)
 label = Label(window, width=2)
 label.grid(column=1, row=1)
 
-btnCount = Button(text="Рассчитать", font=("Calibri", 22), command=count)
-btnCount.grid(column=0, row=5, columnspan=20, pady=20)
+btnCount_gauss = Button(text="Рассчитать Гаусса", font=("Calibri", 22), command=count_gauss, width=18)
+btnCount_gauss.grid(column=0, row=5, columnspan=20, pady=6)
+
+btnCount_iter = Button(text="Рассчитать Итерациями", font=("Calibri", 22), command=count_iteration, width=18)
+btnCount_iter.grid(column=0, row=6, columnspan=20, pady=6)
+
+btnCount_zeid = Button(text="Рассчитать Зейделем", font=("Calibri", 22), command=count_zeidel, width=18)
+btnCount_zeid.grid(column=0, row=7, columnspan=20, pady=6)
 
 window.mainloop()

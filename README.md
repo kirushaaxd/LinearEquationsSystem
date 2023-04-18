@@ -1,7 +1,7 @@
 # LinearEquationsSystem
 
 
-Task: program for solving system of linear equations (3x3) with Gauss, Iteration and Zeidel methods
+Task: program for solving system of linear equations (3x3) with Gauss, Iteration and Seidel methods
 
 
 Programming language: python

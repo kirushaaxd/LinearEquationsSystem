@@ -53,7 +53,7 @@ def count_iteration():  # solve system with iteration method
 
         A, B = sort_diag_arr(A, B)
 
-        eps = 0.001
+        eps = 0.0001
         n = len(A)
         for j in range(n):
             k = A[j][j]

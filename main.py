@@ -44,15 +44,16 @@ def count_iteration():  # solve system with iteration method
     x3res.config(text="")
 
     try:
-        A = [[float(x11.get()), float(x12.get()), float(x13.get())],
-               [float(x21.get()), float(x22.get()), float(x23.get())],
-               [float(x31.get()), float(x32.get()), float(x33.get())]]
+        A = [
+            [float(x11.get()), float(x12.get()), float(x13.get())],
+            [float(x21.get()), float(x22.get()), float(x23.get())],
+            [float(x31.get()), float(x32.get()), float(x33.get())]
+        ]
         B = [float(b1.get()), float(b2.get()), float(b3.get())]
 
         A, B = sort_diag_arr(A, B)
 
-        c = 3
-        eps = 1 / 10 ** c
+        eps = 0.001
         n = len(A)
         for j in range(n):
             k = A[j][j]
@@ -80,7 +81,7 @@ def count_iteration():  # solve system with iteration method
         x3res.config(text=f"X3 = {round(x[2], 3)}")
 
         newWindow = Toplevel(window)
-        newWindow.title("Шаги")
+        newWindow.title("Шаги итераций:")
         newWindow.geometry("300x400")
 
         res = []
@@ -111,12 +112,55 @@ def count_zeidel():  # solve system with Seidel method
     x3res.config(text="")
 
     try:
-        line1 = [int(x11.get()), int(x12.get()), int(x13.get())]
-        line2 = [int(x21.get()), int(x22.get()), int(x23.get())]
-        line3 = [int(x31.get()), int(x32.get()), int(x33.get())]
+        A = np.array([[float(x11.get()), float(x12.get()), float(x13.get())],
+                      [float(x21.get()), float(x22.get()), float(x23.get())],
+                      [float(x31.get()), float(x32.get()), float(x33.get())]])
+        b = np.array([float(b1.get()), float(b2.get()), float(b3.get())])
+        x = np.array(0)
 
-        a = [line1, line2, line3]
-        b = [int(b1.get()), int(b2.get()), int(b3.get())]
+        n = len(A)
+        x = [.0 for i in range(n)]
+
+        r = 0
+        steps = []
+
+        converge = False
+        while not converge:
+            x_new = np.copy(x)
+            steps.append([])
+            for i in range(n):
+                s1 = sum(A[i][j] * x_new[j] for j in range(i))
+                s2 = sum(A[i][j] * x[j] for j in range(i + 1, n))
+                x_new[i] = (b[i] - s1 - s2) / A[i][i]
+                steps[r].append(x_new[i])
+            r += 1
+
+            converge = np.max(np.abs(x_new - x)) <= 0.001
+            x = x_new
+
+        x1res.config(text=f"X1 = {round(x[0], 3)}")
+        x2res.config(text=f"X2 = {round(x[1], 3)}")
+        x3res.config(text=f"X3 = {round(x[2], 3)}")
+
+        newWindow = Toplevel(window)
+        newWindow.title("Шаги Зейделя:")
+        newWindow.geometry("300x400")
+
+        res = []
+        s = 0
+        for p in steps:
+            res.append(f"{s}) X1 = {round(p[0], 3)} | X2 = {round(p[1], 3)} | X3 = {round(p[2], 3)}")
+            s += 1
+
+        vvar = StringVar(value=res)
+        listbox = Listbox(newWindow, listvariable=vvar, font=12)
+        listbox.pack(side=LEFT, fill=BOTH, expand=1)
+
+        scrollbar = Scrollbar(newWindow, orient="vertical", command=listbox.yview)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        listbox["yscrollcommand"] = scrollbar.set
+
+        newWindow.mainloop()
 
     except:
         mb.showerror("Ошибка",
